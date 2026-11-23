@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة الإيرادات — أغسطس إلى أكتوبر 2026</title>
+<style>
+:root{
+  --bg:#f4f6f9; --surface-1:#ffffff; --surface-2:#f6f8fb; --line:#e3e7ee; --grid:#edf0f4;
+  --text-primary:#141a24; --text-secondary:#4c5566; --text-muted:#7a8494;
+  --s-transport:#2a78d6; --s-crusher:#eb6834; --s-mixer:#1baf7a; --s-paint:#eda100; --s-rental:#e87ba4;
+  --good:#16893f; --bad:#d23c3c; --warn:#e0a526;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text-primary);font-family:"Segoe UI",Tahoma,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;font-size:14px}
+.wrap{max-width:1360px;margin:0 auto;padding:22px 22px 40px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+h1{margin:0;font-size:24px;font-weight:700;letter-spacing:0}
+.sub{color:var(--text-secondary);margin-top:6px;font-size:13px}
+.seg{display:inline-flex;background:var(--surface-1);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{all:unset;cursor:pointer;padding:8px 16px;border-radius:9px;color:var(--text-secondary);font-weight:600;font-size:13px}
+.seg button:hover{color:var(--text-primary)}
+.seg button.on{background:#eaf1fc;color:#1c5cab;box-shadow:inset 0 0 0 1px #b7d3f6}
+.seg button:focus-visible{outline:2px solid #3987e5}
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.flabel{color:var(--text-muted);font-size:12px}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpi .lbl{color:var(--text-secondary);font-size:12.5px}
+.kpi .val{font-size:26px;font-weight:700;margin-top:6px;direction:ltr;text-align:right}
+.kpi .val small{font-size:13px;color:var(--text-muted);font-weight:600}
+.kpi .note{font-size:12px;color:var(--text-muted);margin-top:4px}
+.up{color:var(--good)} .down{color:var(--bad)}
+.sectors{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+.sec{cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s, transform .15s}
+.sec:hover{border-color:#c9d1dd}
+.sec.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset}
+.sec .bar{position:absolute;inset:0 0 auto 0;height:3px;background:var(--c)}
+.sec .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.dot{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.sec .v{font-size:20px;font-weight:700;margin-top:10px;direction:ltr;text-align:right}
+.sec .meta{display:flex;justify-content:space-between;color:var(--text-muted);font-size:12px;margin-top:4px}
+.sec svg{display:block;margin-top:8px}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-bottom:14px}
+.ct{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:10px}
+.ct h3{margin:0;font-size:15px}
+.ct .hint{color:var(--text-muted);font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px;color:var(--text-secondary);font-size:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+svg text{font-family:inherit}
+.mx{width:100%;border-collapse:separate;border-spacing:4px}
+.mx th{color:var(--text-secondary);font-weight:600;font-size:12.5px;padding:6px;text-align:center}
+.mx th.rh{text-align:right}
+.mx td{text-align:center;padding:12px 6px;border-radius:9px;cursor:pointer;font-weight:700;direction:ltr;font-size:13px;transition:outline .1s}
+.mx td.rhc{cursor:default;text-align:right;direction:rtl;font-weight:600;padding-inline:4px}
+.mx td.cell:hover{outline:2px solid #e8edf5}
+.mx td.sel{outline:2px solid #fff}
+.mx td.tot{background:var(--surface-2);cursor:default;color:var(--text-secondary)}
+.detail{margin-top:4px}
+.dhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.dhead h2{margin:0;font-size:19px;display:flex;align-items:center;gap:10px}
+.dhead h2 .dot{width:14px;height:14px;border-radius:4px}
+.dk{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.dk .card{padding:12px 14px;background:var(--surface-2)}
+.dk .lbl{color:var(--text-secondary);font-size:12px}
+.dk .val{font-size:19px;font-weight:700;margin-top:4px;direction:ltr;text-align:right}
+.charts2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.charts2.one{grid-template-columns:1fr}
+.banner{background:#fff8e6;border:1px solid #f1d58a;color:#6b4e00;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.search{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;color:var(--text-primary);padding:8px 12px;min-width:240px;font:inherit}
+.search:focus{outline:2px solid #3987e5}
+.tw{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:10px}
+table.dt{width:100%;border-collapse:collapse;font-size:13px}
+.dt th{position:sticky;top:0;background:#eef2f7;color:var(--text-secondary);font-weight:600;text-align:right;padding:10px;white-space:nowrap;cursor:pointer;user-select:none;border-bottom:1px solid var(--line)}
+.dt th:hover{color:var(--text-primary)}
+.dt td{padding:9px 10px;border-bottom:1px solid #eef1f5;white-space:nowrap}
+.dt td.n{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.dt tbody tr:hover{background:#f5f8fc}
+.dt tfoot td{position:sticky;bottom:0;background:#eef2f7;font-weight:700;border-top:1px solid var(--line)}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;background:#eef1f5;color:var(--text-secondary);font-size:11.5px}
+.tag.yes{background:#e3f5ea;color:#16683a}
+.muted{color:var(--text-muted)}
+#tip{position:fixed;pointer-events:none;background:#ffffff;border:1px solid #d7dde7;border-radius:8px;padding:8px 10px;font-size:12.5px;color:var(--text-primary);z-index:50;opacity:0;transition:opacity .08s;max-width:280px;box-shadow:0 8px 24px rgba(16,24,40,.14)}
+#tip b{display:block;margin-bottom:3px}
+#tip .tv{direction:ltr;text-align:right}
+.src{color:var(--text-muted);font-size:11.5px;margin-top:8px}
+.charts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.chart-card{position:relative;overflow:hidden}
+.chart-card .bar{position:absolute;inset:0 0 auto 0;height:3px;background:var(--c)}
+.chart-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.chart-card .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.chart-card .tv{font-size:20px;font-weight:700;direction:ltr;text-align:left}
+.chart-card .meta{display:flex;justify-content:space-between;color:var(--text-muted);font-size:12px;margin-top:2px}
+.mbar{cursor:pointer;transition:opacity .12s}
+.mbar:hover .bfill{filter:brightness(1.18)}
+.mbar:focus{outline:none}
+.mbar:focus-visible .bfill{stroke:#fff;stroke-width:2}
+.overlay{position:fixed;inset:0;background:rgba(20,26,36,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:40;padding:24px}
+.overlay.open{display:flex}
+.modal{background:var(--surface-1);border:1px solid #d7dde7;border-radius:16px;width:min(1240px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(16,24,40,.25);animation:pop .16s ease-out}
+@keyframes pop{from{transform:translateY(10px) scale(.985);opacity:0}to{transform:none;opacity:1}}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--line)}
+.mhead h2{margin:0;font-size:19px;display:flex;align-items:center;gap:10px}
+.mhead h2 .dot{width:14px;height:14px;border-radius:4px}
+.mbody{overflow:auto;padding:18px 20px 20px}
+.close{all:unset;cursor:pointer;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--text-secondary);background:var(--surface-2);border:1px solid var(--line);font-size:15px}
+.close:hover{color:var(--text-primary);border-color:#b8c1cf}
+.close:focus-visible{outline:2px solid #3987e5}
+.mbody .tw{max-height:430px}
+.seg.mini{margin:6px 0 12px}
+#shareSeg,#mMonths{direction:ltr}
+.seg.mini button{padding:6px 12px;font-size:12px}
+.share{display:flex;flex-direction:column;gap:12px}
+.srow{cursor:pointer;padding:6px 8px;margin:0 -8px;border-radius:9px}
+.srow:hover{background:var(--surface-2)}
+.srow:focus-visible{outline:2px solid #3987e5}
+.slab{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;margin-bottom:6px}
+.slab span:first-child{display:inline-flex;align-items:center;gap:7px}
+.sval{direction:ltr;font-variant-numeric:tabular-nums}
+.sval em{font-style:normal;color:var(--text-muted);font-weight:500;margin-left:6px;font-size:12px}
+.strack{height:12px;background:#eef1f5;border-radius:4px;overflow:hidden}
+.sfill{height:100%;border-radius:4px}
+.donut{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.dleg{flex:1;min-width:190px;display:flex;flex-direction:column;gap:4px}
+.lrow{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600}
+.lrow span:first-child{display:inline-flex;align-items:center;gap:7px}
+.dseg{transition:opacity .12s}
+.donut svg:hover .dseg{opacity:.55}
+.donut svg .dseg:hover{opacity:1}
+.credits{display:flex;gap:8px;flex-wrap:wrap}
+.credits div{background:var(--surface-1);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600}
+.credits span{color:var(--text-muted);font-weight:500;margin-left:4px}
+footer{color:var(--text-muted);font-size:12px;margin-top:18px;line-height:1.8}
+@media (max-width:1100px){.charts{grid-template-columns:repeat(2,1fr)}.sectors{grid-template-columns:repeat(3,1fr)}.grid2,.charts2{grid-template-columns:1fr}.kpis,.dk{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:620px){.charts{grid-template-columns:1fr}.overlay{padding:8px}.sectors{grid-template-columns:1fr 1fr}.kpis,.dk{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>لوحة الإيرادات المجمعة</h1>
+      <div class="sub">أغسطس – سبتمبر – أكتوبر 2026 · خمسة قطاعات · المبالغ بالريال السعودي · اضغط على أي عمود لعرض تفاصيله</div>
+    </div>
+    <div class="credits">
+      <div><span>مصدر البيانات:</span> الأستاذ / عائش محسن</div>
+      <div><span>إعداد التقرير:</span> حازم حسن</div>
+      <div><span>التاريخ:</span> <b style="direction:ltr;unicode-bidi:isolate">23-11-2026</b></div>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+  <section class="charts" id="charts"></section>
+
+  <footer id="foot"></footer>
+</div>
+<div id="tip"></div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="mhead">
+      <h2 id="mTitle"></h2>
+      <div class="filters"><div class="seg" id="mMonths"></div><button class="close" id="mClose" aria-label="إغلاق">✕</button></div>
+    </div>
+    <div class="mbody" id="detail"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {"summary": {"transport": {"aug": 2382931.67, "sep": 1773668.02, "oct": 1885938.37}, "mixer": {"aug": 664305, "sep": 796656, "oct": 274495}, "paint": {"aug": 0, "sep": 106961.93, "oct": 225350}, "rental": {"aug": 12375, "sep": 9629, "oct": 9266}, "crusher": {"aug": 625660, "sep": 718006, "oct": 813510}}, "details": {"transport": {"aug": {"rows": [{"project": "Amiral", "company": "CONTRACTING", "expected": 2400.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Hyundai Project", "company": "CONTRACTING", "expected": 51034.3, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "JAFFURAH - PKG 06", "company": "CONTRACTING", "expected": 2380.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "JAFFURAH PKG - 09", "company": "CONTRACTING", "expected": 255.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Khatut Al Mustaqbal", "company": "CONTRACTING", "expected": 3000.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Service", "company": "CONTRACTING", "expected": 33100.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "SINOHYDRO ISF PKG - 06", "company": "CONTRACTING", "expected": 11305.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "TAWAILAH PROJECT - 207", "company": "CONTRACTING", "expected": 700.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Wellsite Project", "company": "CONTRACTING", "expected": 287000.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "CRUSHER Co", "company": "PRODUCTION", "expected": 89129.05, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "الكسارة ومصنع الأسفلت"}, {"project": "ASPHALT PLANT Co", "company": "PRODUCTION", "expected": 13900.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "الكسارة ومصنع الأسفلت"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "AL SALOMI-----EXTERNAL Co", "expected": 778179.6, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "AL SHADI------EXTERNAL Co", "expected": 183084.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "DIGITAL BRAND-----EXTERNAL Co", "expected": 366148.2, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "AI BADER - ARASCO YANBU", "company": "EXTERNAL Co", "expected": 105532.8, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "NATIONAL GRAINS CO", "company": "EXTERNAL Co", "expected": 69236.82, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "ZUMOL PUMP", "company": "QAMAT RIYATHA Z Oil", "expected": 135300.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "زد أويل"}, {"project": "SHABITA PUMP", "company": "QAMAT RIYATHA Z Oil", "expected": 78200.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "زد أويل"}, {"project": "MUHEET AL TASHEED", "company": "MUHEET AL TASHEED Co", "expected": 172246.9, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}, {"project": "LEASE DEPT", "company": "SALOMI RENTAL Co", "expected": 800.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}, {"project": "TRANSPORTATION", "company": "-", "expected": 0.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}], "grand": 2382931.67}, "sep": {"rows": [{"project": "AMIRAL", "company": "CONTRACTING", "expected": 3200.0, "invoiced": 3200.0, "sent": "Yes", "approved": "Yes", "inv": "415-148", "group": "المقاولات"}, {"project": "Hyundai Project", "company": "CONTRACTING", "expected": 175883.73, "invoiced": 175883.73, "sent": "Yes", "approved": "Yes", "inv": "415-1", "group": "المقاولات"}, {"project": "JAFFURAH PKG - 9", "company": "CONTRACTING", "expected": 600.0, "invoiced": 600.0, "sent": "Yes", "approved": "Yes", "inv": "415-154", "group": "المقاولات"}, {"project": "SINO HYDRO JAFF PKG - 9", "company": "CONTRACTING", "expected": 8755.0, "invoiced": 8755.0, "sent": "Yes", "approved": "Yes", "inv": "415-151", "group": "المقاولات"}, {"project": "RIYADH MAZRA", "company": "CONTRACTING", "expected": 5000.0, "invoiced": 0.0, "sent": "Yes", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "AL RUBBA", "company": "CONTRACTING", "expected": 82500.0, "invoiced": 82500.0, "sent": "Yes", "approved": "Yes", "inv": "415-150", "group": "المقاولات"}, {"project": "SERVICE", "company": "CONTRACTING", "expected": 10100.0, "invoiced": 0.0, "sent": "Yes", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "HARADH SERVICE", "company": "CONTRACTING", "expected": 25000.0, "invoiced": 25000.0, "sent": "Yes", "approved": "Yes", "inv": "415-149", "group": "المقاولات"}, {"project": "Wellsite Project", "company": "CONTRACTING", "expected": 224000.0, "invoiced": 224000.0, "sent": "Yes", "approved": "Yes", "inv": "415-155", "group": "المقاولات"}, {"project": "CRUSHER Co", "company": "PRODUCTION", "expected": 32972.99, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "الكسارة ومصنع الأسفلت"}, {"project": "ASPHALT PLANT Co", "company": "PRODUCTION", "expected": 11340.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "الكسارة ومصنع الأسفلت"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "AL SALOMI-----EXTERNAL Co", "expected": 471306.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "AL SALOMI-----NEOM", "expected": 227564.8, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "AL SHADI------EXTERNAL Co", "expected": 0.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "DIGITAL BRAND-----EXTERNAL Co", "expected": 132105.6, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "DIGITAL BRAND-----NEOM", "expected": 89839.7, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "AI BADER - ARASCO YANBU", "company": "EXTERNAL Co", "expected": 15715.2, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "NATIONAL GRAINS CO", "company": "EXTERNAL Co", "expected": 76429.2, "invoiced": 76429.2, "sent": "Yes", "approved": "Yes", "inv": "", "group": "عملاء خارجيون"}, {"project": "ZUMOL PUMP", "company": "QAMAT RIYATHA Z Oil", "expected": 3300.0, "invoiced": 3300.0, "sent": "Yes", "approved": "Yes", "inv": "415-152", "group": "زد أويل"}, {"project": "SHABITA PUMP", "company": "QAMAT RIYATHA Z Oil", "expected": 2300.0, "invoiced": 2300.0, "sent": "Yes", "approved": "Yes", "inv": "415-153", "group": "زد أويل"}, {"project": "MUHEET AL TASHEED", "company": "MUHEET AL TASHEED Co", "expected": 175755.8, "invoiced": 175755.8, "sent": "Yes", "approved": "Yes", "inv": "415-147", "group": "أخرى"}, {"project": "LEASE DEPT", "company": "SALOMI RENTAL Co", "expected": 0.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}, {"project": "TRANSPORTATION", "company": "-", "expected": 0.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}], "grand": 1773668.02}, "oct": {"rows": [{"project": "Amiral", "company": "CONTRACTING", "expected": 34900.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Hyundai Project", "company": "CONTRACTING", "expected": 72723.06, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Haradh-Service", "company": "CONTRACTING", "expected": 7000.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Service", "company": "CONTRACTING", "expected": 2400.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "SINOHYDRO ISF PKG - 06", "company": "CONTRACTING", "expected": 15793.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Wellsite Project", "company": "CONTRACTING", "expected": 248400.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "ABQAIQ", "company": "CONTRACTING", "expected": 104800.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Khatut Al Mustaqbal", "company": "CONTRACTING", "expected": 5788.62, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "Rubba", "company": "CONTRACTING", "expected": 69700.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "المقاولات"}, {"project": "CRUSHER Co", "company": "PRODUCTION", "expected": 94385.29, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "الكسارة ومصنع الأسفلت"}, {"project": "ASPHALT PLANT Co", "company": "PRODUCTION", "expected": 10250.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "الكسارة ومصنع الأسفلت"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "AL SALOM NEOM", "expected": 558108.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "SABIC AGRI NUTRIENTS CO", "company": "DIGITAL BRAND NEOM", "expected": 75568.8, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "AI BADER - ARASCO YANBU", "company": "EXTERNAL Co", "expected": 130601.6, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "FEEDCO", "company": "EXTERNAL Co", "expected": 155085.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "عملاء خارجيون"}, {"project": "ZUMOL PUMP", "company": "QAMAT RIYATHA Z Oil", "expected": 3300.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "زد أويل"}, {"project": "SHABITA PUMP", "company": "QAMAT RIYATHA Z Oil", "expected": 2300.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "زد أويل"}, {"project": "MUHEET AL TASHEED", "company": "MUHEET AL TASHEED Co", "expected": 294835.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}, {"project": "LEASE DEPT", "company": "SALOMI RENTAL Co", "expected": 0.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}, {"project": "TRANSPORTATION", "company": "-", "expected": 0.0, "invoiced": 0.0, "sent": "", "approved": "", "inv": "", "group": "أخرى"}], "grand": 1885938.37}}, "mixer": {"aug": {"rows": [{"client": "Guba Contracting Company", "mix": "", "date": "", "qty": 350.0, "price": 210.0, "total": 73500.0, "note": ""}, {"client": "Sulaiman Al meeri", "mix": "", "date": "", "qty": 498.0, "price": 210.0, "total": 104580.0, "note": ""}, {"client": "Shabita", "mix": "", "date": "", "qty": 90.0, "price": 220.0, "total": 22770.0, "note": ""}, {"client": "Sino Hydro- PKG-09", "mix": "", "date": "", "qty": 665.0, "price": 220.0, "total": 146300.0, "note": ""}, {"client": "Project-207 Taweilah", "mix": "", "date": "", "qty": 310.0, "price": 220.0, "total": 68200.0, "note": ""}, {"client": "Jafurah PKG-09", "mix": "", "date": "", "qty": 140.0, "price": 220.0, "total": 30800.0, "note": ""}, {"client": "Jafurah PKG-06", "mix": "", "date": "", "qty": 15.0, "price": 220.0, "total": 3300.0, "note": ""}, {"client": "Hyundai", "mix": "", "date": "", "qty": 790.0, "price": 220.0, "total": 173800.0, "note": ""}, {"client": "Ayed Manna AL Qarni Contracting Est.", "mix": "", "date": "", "qty": 170.0, "price": 241.5, "total": 41055.0, "note": ""}]}, "sep": {"rows": [{"client": "Hyundai-JFGPE-2", "mix": "", "date": "", "qty": 1400.0, "price": 220.0, "total": 308000.0, "note": ""}, {"client": "Sulaiman Al meeri", "mix": "", "date": "", "qty": 215.0, "price": 210.0, "total": 45150.0, "note": ""}, {"client": "AL ETHAD AL ZAKI", "mix": "", "date": "", "qty": 70.0, "price": 220.0, "total": 17710.0, "note": ""}, {"client": "Sino Hydro- PKG-06", "mix": "", "date": "", "qty": 515.0, "price": 220.0, "total": 113300.0, "note": ""}, {"client": "Al meer", "mix": "", "date": "", "qty": 22.0, "price": 220.0, "total": 6946.0, "note": "تم إضافة نقل بقيمة 1380 ريال"}, {"client": "Guba Contracting Company", "mix": "", "date": "", "qty": 1455.0, "price": 210.0, "total": 305550.0, "note": ""}]}, "oct": {"rows": [{"client": "الجافورة", "mix": "سيلفر", "date": "01/10/2026", "qty": 210.0, "price": 240.0, "total": 50400.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "03/10/2026", "qty": 210.0, "price": 240.0, "total": 50400.0, "note": ""}, {"client": "هيونداي", "mix": "سيلفر", "date": "03/10/2026", "qty": 10.0, "price": 240.0, "total": 2400.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "07/10/2026", "qty": 105.0, "price": 240.0, "total": 25200.0, "note": ""}, {"client": "هيونداي", "mix": "سيلفر", "date": "07/10/2026", "qty": 10.0, "price": 240.0, "total": 2400.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "08/10/2026", "qty": 80.0, "price": 240.0, "total": 19200.0, "note": ""}, {"client": "جوبا", "mix": "مارشال", "date": "08/10/2026", "qty": 90.0, "price": 208.0, "total": 18720.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "10/10/2026", "qty": 42.0, "price": 240.0, "total": 10080.0, "note": ""}, {"client": "جوبا", "mix": "مارشال", "date": "10/10/2026", "qty": 50.0, "price": 208.0, "total": 10400.0, "note": ""}, {"client": "الصيخان", "mix": "مارشال", "date": "14/10/2026", "qty": 35.0, "price": 210.0, "total": 7350.0, "note": ""}, {"client": "الجافورة", "mix": "مارشال", "date": "14/10/2026", "qty": 50.0, "price": 190.0, "total": 9500.0, "note": ""}, {"client": "الجافورة", "mix": "ميمبرين", "date": "14/10/2026", "qty": 10.0, "price": 240.0, "total": 2400.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "22/10/2026", "qty": 70.0, "price": 240.0, "total": 16800.0, "note": ""}, {"client": "مزرعة", "mix": "مارشال", "date": "22/10/2026", "qty": 7.5, "price": 190.0, "total": 1425.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "26/10/2026", "qty": 107.0, "price": 240.0, "total": 25680.0, "note": ""}, {"client": "الجافورة", "mix": "سيلفر", "date": "29/10/2026", "qty": 45.0, "price": 240.0, "total": 10800.0, "note": ""}, {"client": "ناصر الحيدر", "mix": "مارشال", "date": "29/10/2026", "qty": 54.0, "price": 210.0, "total": 11340.0, "note": ""}]}}, "paint": {"aug": {"rows": [{"service": "خدمات أعمال فرقة الدهانات", "qty": 0.0, "value": 0.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 0.0, "value": 0.0}]}, "sep": {"rows": [{"service": "خدمة رش RC2", "qty": 1046.9, "value": 3140.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 451.5, "value": 1780.26}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 451.5, "value": 879.97}, {"service": "خدمة رش RC2", "qty": 1041.67, "value": 625.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 1041.67, "value": 2083.34}, {"service": "خدمة رش RC2", "qty": 8250.0, "value": 4950.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 8250.0, "value": 16500.0}, {"service": "خدمة رش RC2", "qty": 9416.67, "value": 5620.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 9416.67, "value": 18833.34}, {"service": "خدمة رش RC2", "qty": 6583.33, "value": 3950.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 6583.33, "value": 13166.68}, {"service": "خدمة رش RC2", "qty": 2583.33, "value": 1550.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 2583.33, "value": 5166.66}, {"service": "خدمة رش RC2", "qty": 750.0, "value": 450.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 750.0, "value": 1500.0}, {"service": "خدمة رش RC2", "qty": 5541.67, "value": 3325.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 5541.67, "value": 11083.34}, {"service": "خدمة رش RC2", "qty": 4291.67, "value": 8583.34}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 4291.67, "value": 2575.0}, {"service": "خدمة نقل", "qty": 0.0, "value": 1200.0}]}, "oct": {"rows": [{"service": "خدمة نقل", "qty": 0.0, "value": 350.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 6000.0, "value": 180000.0}, {"service": "خدمات أعمال فرقة الأسفلت", "qty": 17307.69, "value": 45000.0}]}}, "rental": {"aug": {"rows": [{"eqp": "CRANE", "code": 4004, "rate": 48000, "rateText": "48000", "client": "ARABIAN IMPACT", "comment": "On 6th Aug eqp released"}, {"eqp": "CRANE", "code": 4005, "rate": 53000, "rateText": "53000", "client": "SAMA EL OULA", "comment": "Continue Work"}, {"eqp": "BOOM TRUCK", "code": 4366, "rate": 29000, "rateText": "29000", "client": "RED CAMEL", "comment": "Continue Work"}]}, "sep": {"rows": [{"eqp": "CRANE", "code": 4005, "rate": 53000, "rateText": "53000", "client": "SAMA EL OULA", "comment": "Continue Work"}, {"eqp": "BULLDOZER", "code": 1258, "rate": 35000, "rateText": "35000", "client": "SAMA EL OULA", "comment": "Continue Work"}, {"eqp": "BOOM TRUCK", "code": 4366, "rate": 29000, "rateText": "29000", "client": "RED CAMEL", "comment": "Continue Work"}]}, "oct": {"rows": [{"eqp": "CRANE", "code": 4005, "rate": 53000, "rateText": "53000", "client": "SAMA EL OULA", "comment": "Continue Work"}, {"eqp": "BULLDOZER", "code": 1258, "rate": 35000, "rateText": "35000", "client": "SAMA EL OULA", "comment": "On oct only 8 days work then released"}, {"eqp": "CRANE", "code": 4003, "rate": null, "rateText": "4000/day", "client": "shade corp", "comment": "2 days work payment done"}]}}, "crusher": {"aug": {"rows": [{"client": "Muheet Al Tasheed محيط التشييد", "products": {"3/4": {"qty": 5323.0, "amt": 74522.0}, "3/8": {"qty": 5641.15, "amt": 124105.0}}, "qty": 10964.15, "amt": 198627.0}, {"client": "Nahdat Modon مصنع نهضه مدن", "products": {"3/8": {"qty": 1617.78, "amt": 35915.0}, "3/16": {"qty": 1365.35, "amt": 30311.0}}, "qty": 2983.13, "amt": 66226.0}, {"client": "Arkan Factory مؤسسة أركان الشرقية", "products": {"3/8": {"qty": 52.03, "amt": 1119.0}, "3/16": {"qty": 183.76, "amt": 3951.0}}, "qty": 235.79, "amt": 5070.0}, {"client": "Leading Dovelopment شركة التنمية الرائدة", "products": {"3/4": {"qty": 977.73, "amt": 14666.0}, "3/8": {"qty": 432.42, "amt": 9513.0}, "Powder": {"qty": 262.99, "amt": 1841.0}}, "qty": 1673.14, "amt": 26020.0}, {"client": "Ahmed Ibrahim Al-Khalil احمد ابراهيم الخليل", "products": {"Mix": {"qty": 311.76, "amt": 2984.0}}, "qty": 311.76, "amt": 2984.0}, {"client": "Al-Kifah Factory شركة الكفاح", "products": {"3/4": {"qty": 1380.24, "amt": 24844.0}, "3/8": {"qty": 1859.24, "amt": 39044.0}, "3/16": {"qty": 670.95, "amt": 14090.0}}, "qty": 3910.4300000000003, "amt": 77978.0}, {"client": "Mixer Plant السلومي خلاطات", "products": {"3/4": {"qty": 89.51, "amt": 1477.0}, "3/8": {"qty": 1027.02, "amt": 24648.0}, "Powder": {"qty": 1543.62, "amt": 16208.0}}, "qty": 2660.1499999999996, "amt": 42333.0}, {"client": "Enjaz Trading Co. شركة الإنجاز للتجارة", "products": {"3/4": {"qty": 1008.69, "amt": 14122.0}, "3/8": {"qty": 1495.34, "amt": 29907.0}, "Powder": {"qty": 1514.03, "amt": 10598.0}, "1.5\"": {"qty": 974.93, "amt": 18524.0}}, "qty": 4992.99, "amt": 73151.0}, {"client": "Food & Transport Pioneer ﺸﺮﻛﻪ ﺭﻭﺍﺩ ﺍﻟﻐﺬﺍء", "products": {"3/8": {"qty": 478.3, "amt": 9088.0}, "3/16": {"qty": 1204.54, "amt": 22886.0}}, "qty": 1682.84, "amt": 31974.0}, {"client": "Model Contracting شركة أعمال النهضة", "products": {"3/8": {"qty": 93.64, "amt": 2060.0}, "3/16": {"qty": 30.26, "amt": 666.0}}, "qty": 123.9, "amt": 2726.0}, {"client": "Khalid Masoud Naji خالد مسعود ناجي", "products": {"3/4": {"qty": 121.0, "amt": 1800.0}, "Powder": {"qty": 428.53, "amt": 3000.0}}, "qty": 549.53, "amt": 4800.0}, {"client": "Red Co Masna مصنع شركة تنمية المصادر", "products": {"3/4": {"qty": 590.73, "amt": 8270.0}, "3/8": {"qty": 1312.97, "amt": 23633.0}, "3/16": {"qty": 902.66, "amt": 15345.0}}, "qty": 2806.36, "amt": 47248.0}, {"client": "Top Quality Factory شركة قمة الجودة", "products": {"3/8": {"qty": 1070.18, "amt": 21404.0}, "3/16": {"qty": 704.88, "amt": 14098.0}, "Powder": {"qty": 350.34, "amt": 2452.0}}, "qty": 2125.4, "amt": 37954.0}, {"client": "Jafura Hyundai Project مشروع هيونداي الجافورة", "products": {"Mix": {"qty": 642.6, "amt": 7069.0}}, "qty": 642.6, "amt": 7069.0}, {"client": "Badar Hamad بدر حمد عامل نقليات", "products": {"Mix": {"qty": 165.76, "amt": 1500.0}}, "qty": 165.76, "amt": 1500.0}]}, "sep": {"rows": [{"client": "Muheet Al Tasheed محيط التشييد", "products": {"3/4": {"qty": 4955.86, "amt": 69382.0}, "3/8": {"qty": 5909.4, "amt": 130007.0}}, "qty": 10865.259999999998, "amt": 199389.0}, {"client": "Nahdat Modon مصنع نهضه مدن", "products": {"3/8": {"qty": 2114.61, "amt": 46944.0}, "3/16": {"qty": 1032.84, "amt": 22929.0}}, "qty": 3147.45, "amt": 69873.0}, {"client": "Ahmed Ibrahim Al-Khalil احمد ابراهيم الخليل", "products": {"Mix": {"qty": 406.55, "amt": 3843.0}}, "qty": 406.55, "amt": 3843.0}, {"client": "شركة الفارد للخدمات Al-Farid", "products": {"3/4": {"qty": 820.13, "amt": 12302.0}, "3/8": {"qty": 3054.37, "amt": 61087.0}}, "qty": 3874.5, "amt": 73389.0}, {"client": "Al-Kifah Factory شركة الكفاح", "products": {"3/4": {"qty": 251.86, "amt": 4533.0}, "3/8": {"qty": 277.76, "amt": 5833.0}, "3/16": {"qty": 143.98, "amt": 3024.0}}, "qty": 673.6, "amt": 13390.0}, {"client": "Radi Minhali شركة راضى المنهالى", "products": {"Mix": {"qty": 828.12, "amt": 9109.0}}, "qty": 828.12, "amt": 9109.0}, {"client": "Mixer Plant السلومي خلاطات", "products": {"3/4": {"qty": 28.38, "amt": 468.0}, "3/8": {"qty": 1035.61, "amt": 24855.0}, "Powder": {"qty": 472.36, "amt": 4960.0}}, "qty": 1536.35, "amt": 30283.0}, {"client": "Enjaz Trading Co. شركة الإنجاز للتجارة", "products": {"3/4": {"qty": 2033.84, "amt": 28474.0}, "3/8": {"qty": 1535.78, "amt": 30716.0}, "Powder": {"qty": 2854.35, "amt": 19980.0}, "1.5\"": {"qty": 494.28, "amt": 9391.0}}, "qty": 6918.249999999999, "amt": 88561.0}, {"client": "Food & Transport Pioneer ﺸﺮﻛﻪ ﺭﻭﺍﺩ ﺍﻟﻐﺬﺍء", "products": {"3/4": {"qty": 466.36, "amt": 6529.0}, "3/8": {"qty": 616.06, "amt": 11767.0}, "3/16": {"qty": 878.16, "amt": 16685.0}}, "qty": 1960.58, "amt": 34981.0}, {"client": "Khalid Masoud Naji مسعود ناضي", "products": {"3/4": {"qty": 59.84, "amt": 898.0}, "Powder": {"qty": 486.42, "amt": 3405.0}}, "qty": 546.26, "amt": 4303.0}, {"client": "Robo Makka شركة محطة ربوع مكة", "products": {"3/8": {"qty": 876.92, "amt": 17538.0}, "3/16": {"qty": 958.98, "amt": 19180.0}}, "qty": 1835.9, "amt": 36718.0}, {"client": "Red Co Masna مصنع شركة تنمية المصادر", "products": {"3/4": {"qty": 700.71, "amt": 9810.0}, "3/8": {"qty": 1646.79, "amt": 29642.0}, "3/16": {"qty": 950.28, "amt": 16155.0}}, "qty": 3297.7799999999997, "amt": 55607.0}, {"client": "Top Quality Factory شركة قمة الجودة", "products": {"3/4": {"qty": 64.42, "amt": 966.0}, "3/8": {"qty": 755.62, "amt": 15112.0}, "3/16": {"qty": 557.88, "amt": 11158.0}, "Powder": {"qty": 745.45, "amt": 5218.0}}, "qty": 2123.37, "amt": 32454.0}, {"client": "Jafura Hyundai Project مشروع هيونداي الجافورة", "products": {"3/4": {"qty": 6009.67, "amt": 66106.0}}, "qty": 6009.67, "amt": 66106.0}]}, "oct": {"rows": [{"client": "Muheet Al Tasheed محيط التشييد", "products": {"3/4": {"qty": 7569.47, "amt": 105973.0}, "3/8": {"qty": 9185.09, "amt": 202072.0}}, "qty": 16754.56, "amt": 308045.0}, {"client": "Nahdat Modon مصنع نهضه مدن", "products": {"3/8": {"qty": 2019.27, "amt": 44828.0}, "3/16": {"qty": 1037.24, "amt": 23027.0}}, "qty": 3056.51, "amt": 67855.0}, {"client": "شركة الفارد للخدمات Al-Farid", "products": {"3/4": {"qty": 2923.6, "amt": 43854.0}, "3/8": {"qty": 3033.34, "amt": 60667.0}}, "qty": 5956.9400000000005, "amt": 104521.0}, {"client": "Al-Kifah Factory شركة الكفاح", "products": {"3/4": {"qty": 422.04, "amt": 7597.0}, "3/8": {"qty": 269.67, "amt": 5663.0}, "3/16": {"qty": 470.82, "amt": 9887.0}}, "qty": 1162.53, "amt": 23147.0}, {"client": "Radi Minhali شركة راضى المنهالى", "products": {"Mix": {"qty": 1153.44, "amt": 12688.0}}, "qty": 1153.44, "amt": 12688.0}, {"client": "Mixer Plant السلومي خلاطات", "products": {"3/4": {"qty": 1659.62, "amt": 21575.0}, "3/8": {"qty": 1218.05, "amt": 21925.0}, "Powder": {"qty": 3470.03, "amt": 20820.0}}, "qty": 6347.700000000001, "amt": 64320.0}, {"client": "Food & Transport Pioneer ﺸﺮﻛﻪ ﺭﻭﺍﺩ ﺍﻟﻐﺬﺍء", "products": {"3/4": {"qty": 171.98, "amt": 2580.0}, "3/8": {"qty": 1814.12, "amt": 37189.0}, "3/16": {"qty": 2073.54, "amt": 39397.0}}, "qty": 4059.64, "amt": 79166.0}, {"client": "Sama Service شركة سما الأعمال", "products": {"3/4": {"qty": 1105.2, "amt": 16578.0}, "3/8": {"qty": 379.26, "amt": 7585.0}, "3/16": {"qty": 472.33, "amt": 9447.0}}, "qty": 1956.79, "amt": 33610.0}, {"client": "Khalid Masoud Naji مسعود ناضي", "products": {"Powder": {"qty": 551.02, "amt": 3857.0}}, "qty": 551.02, "amt": 3857.0}, {"client": "Robo Makka شركة محطة ربوع مكة", "products": {"3/8": {"qty": 1067.07, "amt": 21341.0}, "3/16": {"qty": 1212.8, "amt": 24256.0}}, "qty": 2279.87, "amt": 45597.0}, {"client": "Red Co Masna مصنع شركة تنمية المصادر", "products": {"3/4": {"qty": 256.62, "amt": 3593.0}, "3/8": {"qty": 496.37, "amt": 8935.0}, "3/16": {"qty": 885.83, "amt": 15059.0}}, "qty": 1638.8200000000002, "amt": 27587.0}, {"client": "Top Quality Factory شركة قمة الجودة", "products": {"3/4": {"qty": 93.4, "amt": 1401.0}, "3/8": {"qty": 346.22, "amt": 6924.0}, "3/16": {"qty": 395.34, "amt": 7907.0}, "Powder": {"qty": 639.56, "amt": 4477.0}}, "qty": 1474.52, "amt": 20709.0}, {"client": "Al-Faw Gulf Co شركة الفاء الخليج للمقاولات", "products": {"3/4": {"qty": 25.0, "amt": 371.0}}, "qty": 25.0, "amt": 371.0}, {"client": "Jafura Hyundai Project مشروع هيونداي الجافورة", "products": {"3/4": {"qty": 28.02, "amt": 392.0}, "3/8": {"qty": 60.42, "amt": 1329.0}, "Mix": {"qty": 1663.3, "amt": 18296.0}}, "qty": 1751.74, "amt": 20017.0}, {"client": "Abqaiq Project مشروع بقيق", "products": {"3/8": {"qty": 91.82, "amt": 2020.0}}, "qty": 91.82, "amt": 2020.0}]}}}};
+const MONTHS=[{k:'aug',n:'أغسطس'},{k:'sep',n:'سبتمبر'},{k:'oct',n:'أكتوبر'}];
+const MN=Object.fromEntries(MONTHS.map(m=>[m.k,m.n]));
+const SECTORS=[
+ {k:'transport',n:'النقليات',c:'var(--s-transport)',hex:'#2a78d6',src:'ملف النقليات (TRANSPORTATION TRIPS SUMMARY)'},
+ {k:'crusher',n:'الكسارات',c:'var(--s-crusher)',hex:'#eb6834',src:'ملف مبيعات الكسارات (Summary Of Crusher Sales)'},
+ {k:'mixer',n:'الخلاطة',c:'var(--s-mixer)',hex:'#1baf7a',src:'ملف مبيعات الخلاطة (Al Hasa Plant – Asphalt)'},
+ {k:'paint',n:'الدهانات + الأسفلت',c:'var(--s-paint)',hex:'#eda100',src:'ملف خدمات الخلاطة (فرقة الدهانات والأسفلت)'},
+ {k:'rental',n:'تأجير المعدات',c:'var(--s-rental)',hex:'#e87ba4',src:'ملف RENTAL EQP AUG-SEP-OCT'},
+];
+const SC=Object.fromEntries(SECTORS.map(s=>[s.k,s]));
+const S=DATA.summary;
+const state={month:'oct',sector:'transport',q:'',sort:null};
+
+const nf=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
+const nf2=new Intl.NumberFormat('en-US',{maximumFractionDigits:2});
+const fmt=v=>nf.format(Math.round(v||0));
+const short=v=>{const a=Math.abs(v);if(a>=1e6)return nf2.format(+(v/1e6).toFixed(2))+'M';if(a>=1e3)return nf.format(v/1e3)+'K';return nf.format(v)};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const months=()=>state.month==='all'?MONTHS.map(m=>m.k):[state.month];
+const secTotal=(s,ms=months())=>ms.reduce((a,m)=>a+(S[s][m]||0),0);
+const monthTotal=m=>SECTORS.reduce((a,s)=>a+(S[s.k][m]||0),0);
+
+// tooltip
+const tip=document.getElementById('tip');
+function showTip(e,html){tip.innerHTML=html;tip.style.opacity=1;moveTip(e)}
+function moveTip(e){const w=tip.offsetWidth,h=tip.offsetHeight;let x=e.clientX+14,y=e.clientY+14;if(x+w>innerWidth-8)x=e.clientX-w-14;if(y+h>innerHeight-8)y=e.clientY-h-14;tip.style.left=x+'px';tip.style.top=y+'px'}
+function hideTip(){tip.style.opacity=0}
+function bindTips(root){root.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('mouseenter',e=>showTip(e,el.dataset.tip));el.addEventListener('mousemove',moveTip);el.addEventListener('mouseleave',hideTip)})}
+
+let lastFocus=null;
+function openModal(s,m){state.sector=s;state.month=m;state.q='';state.sort=null;lastFocus=document.activeElement;hideTip();renderModal();const o=document.getElementById('overlay');o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('mClose').focus()}
+function closeModal(){const o=document.getElementById('overlay');o.classList.remove('open');o.setAttribute('aria-hidden','true');document.body.style.overflow='';if(lastFocus)lastFocus.focus()}
+function setModalMonth(m){state.month=m;state.q='';state.sort=null;renderModal()}
+function renderModal(){
+  const s=SC[state.sector];
+  document.getElementById('mTitle').innerHTML=`<span class="dot" style="--c:${s.c}"></span>تفاصيل ${s.n} — ${state.month==='all'?'الأشهر الثلاثة':MN[state.month]}`;
+  const el=document.getElementById('mMonths');
+  el.innerHTML=[...MONTHS,{k:'all',n:'الأشهر الثلاثة'}].map(m=>`<button class="${state.month===m.k?'on':''}" data-m="${m.k}">${m.n}</button>`).join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>setModalMonth(b.dataset.m));
+  renderDetail();
+  document.querySelector('.mbody').scrollTop=0;
+}
+document.getElementById('mClose').onclick=closeModal;
+document.getElementById('overlay').addEventListener('mousedown',e=>{if(e.target.id==='overlay')closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('overlay').classList.contains('open'))closeModal()});
+
+const ALL=MONTHS.map(m=>m.k);
+function renderKPIs(){
+  const total=ALL.reduce((a,m)=>a+monthTotal(m),0);
+  const a=monthTotal('aug'),o=monthTotal('oct'),ch=(o-a)/a*100;
+  const top=SECTORS.map(s=>({s,v:secTotal(s.k,ALL)})).sort((x,y)=>y.v-x.v)[0];
+  const best=MONTHS.map(m=>({m,v:monthTotal(m.k)})).sort((x,y)=>y.v-x.v)[0];
+  document.getElementById('kpis').innerHTML=`
+   <div class="card kpi"><div class="lbl">إجمالي الإيرادات — الأشهر الثلاثة</div><div class="val">${fmt(total)} <small>ر.س</small></div><div class="note">متوسط شهري ${fmt(total/3)} ر.س</div></div>
+   <div class="card kpi"><div class="lbl">التغير من أغسطس إلى أكتوبر</div><div class="val ${ch>=0?'up':'down'}">${ch>=0?'▲':'▼'} ${nf2.format(Math.abs(ch).toFixed(1))}%</div><div class="note">${fmt(a)} ← ${fmt(o)}</div></div>
+   <div class="card kpi"><div class="lbl">أكبر قطاع</div><div class="val" style="direction:rtl">${top.s.n}</div><div class="note">${fmt(top.v)} ر.س · ${nf2.format((top.v/total*100).toFixed(1))}% من الإجمالي</div></div>
+   <div class="card kpi"><div class="lbl">أعلى شهر إيرادًا</div><div class="val" style="direction:rtl">${best.m.n}</div><div class="note">${fmt(best.v)} ر.س</div></div>`;
+}
+
+function niceStep(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+function niceAxis(max){const st=niceStep(max/4);const n=Math.ceil(max*1.06/st);return {nice:st*n,n}}
+function niceMax(v){if(v<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;const n=f<=1?1:f<=1.5?1.5:f<=2?2:f<=2.5?2.5:f<=3?3:f<=4?4:f<=5?5:f<=6?6:f<=8?8:10;return n*p}
+
+function sectorChart(s){
+  const W=420,H=250,pl=50,pr=14,pt=26,pb=34;
+  const vals=MONTHS.map(m=>S[s.k][m.k]||0);
+  const {nice,n:TK}=niceAxis(Math.max(...vals,1));
+  const y=v=>pt+(H-pt-pb)*(1-v/nice);
+  const cw=(W-pl-pr)/3,bw=Math.min(78,cw*.56);
+  let g='';
+  for(let i=0;i<=TK;i++){const t=nice*i/TK;g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)"/><text x="${pl-8}" y="${y(t)+4}" fill="var(--text-muted)" font-size="11" text-anchor="end">${short(t)}</text>`}
+  MONTHS.forEach((m,i)=>{
+    const v=vals[i],cx=pl+cw*(i+.5),x=cx-bw/2,top=y(v),h=Math.max(y(0)-top,v>0?3:0);
+    const prev=i?vals[i-1]:null;const chg=prev?((v-prev)/prev*100):null;
+    const chgTxt=chg==null?'':`<div class='muted'>${chg>=0?'▲':'▼'} ${nf2.format(Math.abs(chg).toFixed(1))}% عن ${MONTHS[i-1].n}</div>`;
+    g+=`<g class="mbar" data-s="${s.k}" data-m="${m.k}" tabindex="0" role="button" aria-label="${s.n} ${m.n} ${fmt(v)} ريال، اضغط لعرض التفاصيل" data-tip="<b>${s.n} — ${m.n}</b><div class='tv'>${fmt(v)} ر.س</div>${chgTxt}<div class='muted'>اضغط لعرض التفاصيل</div>">
+      <rect x="${cx-cw/2+4}" y="${pt-18}" width="${cw-8}" height="${H-pt-pb+18}" fill="transparent"/>
+      ${h>0?`<path class="bfill" d="M${x},${y(0)} V${top+4} Q${x},${top} ${x+4},${top} H${x+bw-4} Q${x+bw},${top} ${x+bw},${top+4} V${y(0)} Z" fill="${s.hex}"/>`:''}
+      <text x="${cx}" y="${top-8}" text-anchor="middle" fill="var(--text-primary)" font-size="12.5" font-weight="700">${v?short(v):'0'}</text>
+      <text x="${cx}" y="${H-pb+21}" text-anchor="middle" fill="var(--text-secondary)" font-size="13" font-weight="600">${m.n}</text></g>`;
+  });
+  g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(0)}" y2="${y(0)}" stroke="#c9d1dd"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="direction:ltr" role="img" aria-label="إيرادات ${s.n} الشهرية">${g}</svg>`;
+}
+
+let shareMonth='all';
+function arcPath(cx,cy,R,r,a0,a1){const p=(rad,a)=>[cx+rad*Math.sin(a),cy-rad*Math.cos(a)];const L=a1-a0>Math.PI?1:0;const [x0,y0]=p(R,a0),[x1,y1]=p(R,a1),[x2,y2]=p(r,a1),[x3,y3]=p(r,a0);return `M${x0},${y0} A${R},${R} 0 ${L} 1 ${x1},${y1} L${x2},${y2} A${r},${r} 0 ${L} 0 ${x3},${y3} Z`}
+function shareChart(){
+  const ms=shareMonth==='all'?ALL:[shareMonth];
+  const grand=ms.reduce((a,m)=>a+monthTotal(m),0)||1;
+  const rows=SECTORS.map(s=>({s,v:ms.reduce((a,m)=>a+(S[s.k][m]||0),0)})).sort((a,b)=>b.v-a.v);
+  const cx=110,cy=110,R=100,r=64;let a=0,g='';
+  const live=rows.filter(x=>x.v>0);
+  live.forEach(x=>{const sw=x.v/grand*2*Math.PI;const a1=a+Math.max(sw,0.06);
+    const tipTxt=`<b>${x.s.n} — ${shareMonth==='all'?'الأشهر الثلاثة':MN[shareMonth]}</b><div class='tv'>${fmt(x.v)} ر.س</div><div class='muted'>${nf2.format((x.v/grand*100).toFixed(1))}% من الإجمالي · اضغط للتفاصيل</div>`;
+    g+=`<path class="dseg" data-s="${x.s.k}" d="${live.length===1?arcPath(cx,cy,R,r,0,Math.PI*1.9999):arcPath(cx,cy,R,r,a,a1)}" fill="${x.s.hex}" stroke="var(--surface-1)" stroke-width="2" style="cursor:pointer" data-tip="${tipTxt}"/>`;a=a1});
+  g+=`<text x="${cx}" y="${cy-6}" text-anchor="middle" fill="var(--text-muted)" font-size="12">${shareMonth==='all'?'الأشهر الثلاثة':MN[shareMonth]}</text><text x="${cx}" y="${cy+16}" text-anchor="middle" fill="var(--text-primary)" font-size="19" font-weight="700">${short(grand)}</text>`;
+  const legend=rows.map(x=>`<div class="lrow srow" data-s="${x.s.k}" tabindex="0" role="button" aria-label="${x.s.n} ${fmt(x.v)} ريال، اضغط لعرض التفاصيل"><span><i class="dot" style="--c:${x.s.c}"></i>${x.s.n}</span><span class="sval">${fmt(x.v)} <em>${nf2.format((x.v/grand*100).toFixed(1))}%</em></span></div>`).join('');
+  return `<div class="donut"><svg viewBox="0 0 220 220" width="210" height="210" style="direction:ltr;flex:none" role="img" aria-label="توزيع الإيرادات حسب القطاع">${g}</svg><div class="dleg">${legend}</div></div>`;
+}
+function renderCharts(){
+  const grand=ALL.reduce((a,m)=>a+monthTotal(m),0);
+  let h=SECTORS.map(s=>{const v=secTotal(s.k,ALL),a=S[s.k].aug,o=S[s.k].oct;const ch=a?(o-a)/a*100:null;
+    return `<div class="card chart-card" style="--c:${s.c}"><div class="bar"></div>
+      <div class="top"><div><div class="nm"><span class="dot"></span>${s.n}</div><div class="meta" style="margin-top:6px"><span>${nf2.format((v/grand*100).toFixed(1))}% من الإجمالي</span></div></div>
+      <div><div class="tv">${fmt(v)}</div><div class="meta" style="justify-content:flex-end">${ch==null?'لا إيراد في أغسطس':`<span class="${ch>=0?'up':'down'}">${ch>=0?'▲':'▼'} ${nf2.format(Math.abs(ch).toFixed(1))}%</span>&nbsp;أغسطس ← أكتوبر`}</div></div></div>
+      ${sectorChart(s)}</div>`}).join('');
+  const st=shareMonth==='all'?ALL:[shareMonth];const stot=st.reduce((a,m)=>a+monthTotal(m),0);
+  h+=`<div class="card chart-card" style="--c:#8b95a7"><div class="bar"></div><div class="top"><div><div class="nm">توزيع الإيرادات حسب القطاع</div><div class="meta" style="margin-top:6px"><span>اضغط على أي قطاع لعرض تفاصيله</span></div></div><div class="tv">${fmt(stot)}</div></div>
+    <div class="seg mini" id="shareSeg">${[...MONTHS,{k:'all',n:'الكل'}].map(m=>`<button class="${shareMonth===m.k?'on':''}" data-m="${m.k}">${m.n}</button>`).join('')}</div>${shareChart()}</div>`;
+  const el=document.getElementById('charts');el.innerHTML=h;
+  el.querySelectorAll('.mbar').forEach(b=>{b.addEventListener('click',()=>openModal(b.dataset.s,b.dataset.m));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openModal(b.dataset.s,b.dataset.m)}})});
+  el.querySelectorAll('#shareSeg button').forEach(b=>b.onclick=()=>{shareMonth=b.dataset.m;hideTip();renderCharts()});
+  el.querySelectorAll('.srow,.dseg').forEach(r=>{const go=()=>openModal(r.dataset.s,shareMonth);r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
+  bindTips(el);
+}
+
+/* ---------- details per sector ---------- */
+const yes=v=>v?`<span class="tag ${String(v).toLowerCase()==='yes'?'yes':''}">${String(v).toLowerCase()==='yes'?'نعم':esc(v)}</span>`:'<span class="muted">—</span>';
+const CFG={
+ transport:{
+   cols:[{k:'group',n:'المجموعة'},{k:'project',n:'المشروع / العميل'},{k:'company',n:'الشركة'},{k:'expected',n:'الإيراد المتوقع',num:1,sum:1},{k:'invoiced',n:'المبلغ المفوتر',num:1,sum:1},{k:'sent',n:'أُرسلت',f:yes},{k:'approved',n:'اعتُمدت',f:yes},{k:'inv',n:'رقم الفاتورة'}],
+   value:'expected',
+   kpis:r=>{const e=r.reduce((a,x)=>a+x.expected,0),i=r.reduce((a,x)=>a+x.invoiced,0);return[['الإيراد المتوقع',fmt(e)],['المبلغ المفوتر',i?fmt(i):'غير مسجل'],['نسبة التفوتر',i&&e?nf2.format((i/e*100).toFixed(1))+'%':'—'],['عدد البنود',r.length]]},
+   charts:[{t:'حسب المجموعة',by:'group'},{t:'أعلى 10 مشاريع / عملاء',by:'project',top:10}]
+ },
+ crusher:{
+   cols:null, value:'amt',
+   kpis:r=>{const a=r.reduce((s,x)=>s+x.amt,0),q=r.reduce((s,x)=>s+x.qty,0);return[['قيمة المبيعات',fmt(a)],['الكمية الإجمالية',fmt(q)],['متوسط السعر للوحدة',q?nf2.format((a/q).toFixed(2)):'—'],['عدد العملاء',new Set(r.map(x=>x.client)).size]]},
+   charts:[{t:'أعلى 10 عملاء',by:'client',top:10},{t:'حسب نوع المنتج',custom:'product'}]
+ },
+ mixer:{
+   cols:[{k:'date',n:'التاريخ'},{k:'client',n:'العميل / المشروع'},{k:'mix',n:'نوع الخلطة'},{k:'qty',n:'الكمية (طن)',num:1,sum:1,dec:1},{k:'price',n:'السعر',num:1,dec:1},{k:'total',n:'الإجمالي',num:1,sum:1},{k:'note',n:'ملاحظات'}],
+   value:'total',
+   kpis:r=>{const a=r.reduce((s,x)=>s+x.total,0),q=r.reduce((s,x)=>s+x.qty,0);return[['قيمة المبيعات',fmt(a)],['الكمية (طن)',nf2.format(q)],['متوسط سعر الطن',q?nf2.format((a/q).toFixed(1)):'—'],['عدد العملاء',new Set(r.map(x=>x.client)).size]]},
+   charts:[{t:'حسب العميل / المشروع',by:'client',top:10},{t:'حسب نوع الخلطة',by:'mix',onlyIf:r=>r.some(x=>x.mix)}]
+ },
+ paint:{
+   cols:[{k:'service',n:'نوع الخدمة'},{k:'qty',n:'الكمية (م²)',num:1,sum:1,dec:1},{k:'rate',n:'سعر المتر',num:1,dec:2},{k:'value',n:'القيمة',num:1,sum:1}],
+   value:'value',
+   kpis:r=>{const a=r.reduce((s,x)=>s+x.value,0),q=r.reduce((s,x)=>s+x.qty,0);return[['قيمة الخدمات',fmt(a)],['المساحة المنفذة (م²)',fmt(q)],['عدد البنود',r.length],['أنواع الخدمات',new Set(r.map(x=>x.service)).size]]},
+   charts:[{t:'حسب نوع الخدمة',by:'service'}]
+ },
+ rental:{
+   cols:[{k:'eqp',n:'المعدة'},{k:'code',n:'كود المعدة'},{k:'client',n:'العميل'},{k:'rateText',n:'الإيجار الشهري',numText:1},{k:'comment',n:'ملاحظات'}],
+   value:'rate',
+   kpis:(r,ms)=>{const c=ms.reduce((a,m)=>a+(S.rental[m]||0),0),rt=r.reduce((a,x)=>a+(x.rate||0),0);return[['الإيراد في الملف المجمع',fmt(c)],['مجموع الإيجارات الشهرية',fmt(rt)],['عدد المعدات',r.length],['عدد العملاء',new Set(r.map(x=>x.client)).size]]},
+   charts:[{t:'الإيجار الشهري حسب العميل',by:'client'},{t:'الإيجار الشهري حسب المعدة',by:'eqp'}]
+ }
+};
+const PRODUCTS=['3/4','3/8','3/16','Mix','Powder','1"','1.5"','4"','رمل'];
+
+function rowsFor(sec,ms){
+  return ms.flatMap(m=>(DATA.details[sec][m].rows||[]).map(r=>{const o={...r,_m:m};if(sec==='paint')o.rate=r.qty?r.value/r.qty:0;return o}));
+}
+
+function hbar(items,color){
+  if(!items.length)return '<div class="muted" style="padding:20px 0">لا توجد بيانات لهذا الاختيار</div>';
+  const max=Math.max(...items.map(i=>i.v),1),rowH=30,W=600,lab=270,H=items.length*rowH+6;
+  let g='';
+  items.forEach((it,i)=>{const y=i*rowH+4,w=Math.max((W-lab-80)*it.v/max,it.v>0?3:0);
+    const name=it.n.length>36?it.n.slice(0,35)+'…':it.n;
+    g+=`<g data-tip="<b>${esc(it.n)}</b><div class='tv'>${fmt(it.v)}</div><div class='muted'>${nf2.format(it.p.toFixed(1))}% من القطاع</div>"><rect x="0" y="${y-2}" width="${W}" height="${rowH}" fill="transparent"/>
+      <text x="${W}" y="${y+16}" text-anchor="end" fill="var(--text-secondary)" font-size="12">${esc(name)}</text>
+      <rect x="${W-lab-w}" y="${y+4}" width="${w}" height="16" rx="4" fill="${color}"/>
+      <text x="${W-lab-w-6}" y="${y+16}" text-anchor="end" fill="var(--text-primary)" font-size="11.5">${short(it.v)}</text></g>`});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="direction:ltr">${g}</svg>`;
+}
+function groupBy(rows,key,val){const m=new Map();rows.forEach(r=>{const k=(r[key]||'—').toString().trim()||'—';m.set(k,(m.get(k)||0)+(r[val]||0))});const t=[...m.values()].reduce((a,b)=>a+b,0)||1;return [...m].map(([n,v])=>({n,v,p:v/t*100})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v)}
+
+function renderDetail(){
+  const sec=state.sector,s=SC[sec],cfg=CFG[sec],ms=months();
+  let rows=rowsFor(sec,ms);
+  const total=secTotal(sec);
+  const mlabel=state.month==='all'?'الأشهر الثلاثة':MN[state.month];
+  let h='';
+  if(sec==='rental'){h+=`<div class="banner">⚠️ <div><b>تنبيه مطابقة:</b> قيمة تأجير المعدات في الملف المجمع (${MONTHS.map(m=>m.n+' '+fmt(S.rental[m.k])).join(' · ')}) لا تساوي مجموع الإيجارات الشهرية في ملف المعدات المؤجرة (${MONTHS.map(m=>m.n+' '+fmt(DATA.details.rental[m.k].rows.reduce((a,x)=>a+(x.rate||0),0))).join(' · ')}). اللوحة تعتمد رقم الملف المجمع في الإجماليات، والجدول أدناه يعرض بيانات ملف المعدات كما هي.</div></div>`}
+  if(sec==='paint'&&ms.length===1&&ms[0]==='aug'){h+=`<div class="banner">ℹ️ <div>لا توجد إيرادات مسجلة لقطاع الدهانات والأسفلت في شهر أغسطس (البنود مسجلة بقيمة صفر في ملف خدمات الخلاطة).</div></div>`}
+  if(sec==='transport'&&ms.includes('oct')){h+=`<div class="banner">ℹ️ <div>ملف النقليات لشهر أكتوبر يحتوي على الإيراد المتوقع فقط (بدون أعمدة الفوترة والاعتماد)، وفي أغسطس أعمدة الفوترة فارغة.</div></div>`}
+  const k=cfg.kpis(rows,ms);
+  h+=`<div class="dk">${k.map(([l,v])=>`<div class="card"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('')}</div>`;
+  // charts
+  const charts=cfg.charts.filter(c=>!c.onlyIf||c.onlyIf(rows));
+  h+=`<div class="charts2 ${charts.length===1?'one':''}">`;
+  charts.forEach(c=>{let items;
+    if(c.custom==='product'){const m=new Map();rows.forEach(r=>Object.entries(r.products).forEach(([p,o])=>m.set(p,(m.get(p)||0)+o.amt)));const t=[...m.values()].reduce((a,b)=>a+b,0)||1;items=[...m].map(([n,v])=>({n,v,p:v/t*100})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v)}
+    else{items=groupBy(rows,c.by,cfg.value);if(c.top)items=items.slice(0,c.top)}
+    h+=`<div class="card" style="background:var(--surface-2)"><div class="ct"><h3>${c.t}</h3></div>${hbar(items,s.hex)}</div>`});
+  h+=`</div>`;
+  // table
+  let cols=cfg.cols;
+  if(sec==='crusher'){const used=PRODUCTS.filter(p=>rows.some(r=>r.products[p]));cols=[{k:'client',n:'العميل'},...used.flatMap(p=>[{k:'pq_'+p,n:p+' كمية',num:1,sum:1,dec:1},{k:'pa_'+p,n:p+' قيمة',num:1,sum:1}]),{k:'qty',n:'إجمالي الكمية',num:1,sum:1,dec:1},{k:'amt',n:'إجمالي القيمة',num:1,sum:1}];
+    rows=rows.map(r=>{const o={...r};used.forEach(p=>{o['pq_'+p]=r.products[p]?.qty||0;o['pa_'+p]=r.products[p]?.amt||0});return o})}
+  if(ms.length>1)cols=[{k:'_mn',n:'الشهر'},...cols];
+  rows.forEach(r=>r._mn=MN[r._m]);
+  h+=`<div class="tools"><h3 style="margin:0;font-size:15px">البيانات التفصيلية من ملف الإكسيل <span class="muted" style="font-weight:400;font-size:12px">(${rows.length} بند)</span></h3><input class="search" id="q" placeholder="ابحث في الجدول…" value="${esc(state.q)}"></div>`;
+  h+=`<div class="tw"><table class="dt"><thead><tr>${cols.map((c,i)=>`<th data-i="${i}">${c.n}${state.sort&&state.sort.i===i?(state.sort.d>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div>`;
+  h+=`<div class="src">المصدر: ${s.src} · إجمالي القطاع في الملف المجمع لهذا الاختيار: ${fmt(total)} ر.س</div>`;
+  const el=document.getElementById('detail'); el.innerHTML=h;
+  bindTips(el);
+  const drawBody=()=>{
+    const q=state.q.trim().toLowerCase();
+    let r=q?rows.filter(x=>cols.some(c=>String(x[c.k]??'').toLowerCase().includes(q))):rows.slice();
+    if(state.sort){const c=cols[state.sort.i],d=state.sort.d;r.sort((a,b)=>{const va=c.numText?(a.rate??-1):a[c.k],vb=c.numText?(b.rate??-1):b[c.k];return (typeof va==='number'&&typeof vb==='number'?va-vb:String(va??'').localeCompare(String(vb??''),'ar'))*d})}
+    const cell=(c,x)=>{const v=x[c.k];if(c.f)return `<td>${c.f(v)}</td>`;if(c.num)return `<td class="n">${v?(c.dec?nf2.format(+v.toFixed(c.dec)):fmt(v)):'<span class="muted">—</span>'}</td>`;if(c.numText)return `<td class="n">${x.rate!=null?fmt(x.rate):esc(v)}</td>`;return `<td>${v!==''&&v!=null?esc(v):'<span class="muted">—</span>'}</td>`};
+    document.getElementById('tb').innerHTML=r.length?r.map(x=>`<tr>${cols.map(c=>cell(c,x)).join('')}</tr>`).join(''):`<tr><td colspan="${cols.length}" class="muted" style="text-align:center;padding:24px">لا توجد بنود مطابقة</td></tr>`;
+    document.getElementById('tf').innerHTML=`<tr>${cols.map((c,i)=>i===0?`<td>الإجمالي</td>`:c.sum?`<td class="n">${c.dec?nf2.format(+r.reduce((a,x)=>a+(x[c.k]||0),0).toFixed(c.dec)):fmt(r.reduce((a,x)=>a+(x[c.k]||0),0))}</td>`:c.numText?`<td class="n">${fmt(r.reduce((a,x)=>a+(x.rate||0),0))}</td>`:'<td></td>').join('')}</tr>`;
+  };
+  drawBody();
+  const qi=document.getElementById('q');
+  qi.oninput=()=>{state.q=qi.value;drawBody()};
+  el.querySelectorAll('.dt th').forEach(th=>th.onclick=()=>{const i=+th.dataset.i;state.sort=state.sort&&state.sort.i===i?{i,d:-state.sort.d}:{i,d:cols[i].num||cols[i].numText?-1:1};renderDetail();const q2=document.getElementById('q');q2.focus();q2.setSelectionRange(q2.value.length,q2.value.length)});
+}
+
+function render(){renderKPIs();renderCharts()}
+document.getElementById('foot').innerHTML='الأرقام الإجمالية من ملف الإيرادات المجمع، والتفاصيل من ملفات القطاعات الخمسة. تمت مطابقة إجماليات النقليات والكسارات والخلاطة والدهانات مع الملف المجمع لكل شهر وجاءت متطابقة؛ قطاع تأجير المعدات غير متطابق (انظر التنبيه في تفاصيله).';
+render();
+</script>
+</body>
+</html>
